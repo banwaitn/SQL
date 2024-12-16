@@ -1,0 +1,54 @@
+select * from fortune_companies;
+
+--Classify Companies by Paid Time Off Days:
+SELECT company_name, paid_time_off_days,
+CASE 
+WHEN paid_time_off_days >= 25 THEN 'Generous PTO'
+WHEN paid_time_off_days BETWEEN 15 AND 24 THEN 'Standard PTO'
+ELSE 'Limited PTO'
+END AS PTO_Rating
+FROM fortune_companies;
+
+
+-- Companies that offer Healthcare Benefits:
+SELECT company_name,healthcare_benefits,
+CASE 
+WHEN healthcare_benefits = 1 THEN 'Offers Healthcare'
+ELSE 'No Healthcare Benefits'
+END AS healthcare_status
+FROM fortune_companies;
+
+
+--Rank Companies by Employee Tenure-Categorize companies based on average employee tenure:
+SELECT company_name, avg_employee_tenure,
+CASE 
+WHEN avg_employee_tenure >= 5 THEN 'High Retention'
+WHEN avg_employee_tenure BETWEEN 3 AND 5 THEN 'Moderate Retention'
+ELSE 'Low Retention'
+END AS retention_category
+FROM fortune_companies;
+
+
+--Industries with an Average Employee Tenure Greater Than 5 Years
+SELECT industry,
+round(AVG(avg_employee_tenure),1) AS avg_tenure_in_years
+FROM fortune_companies
+GROUP BY industry
+HAVING AVG(avg_employee_tenure) >round(5);
+
+
+--Industries with More Than 5 Companies Offering Healthcare Benefits
+SELECT  industry,
+COUNT(company_id) AS number_of_companies_with_healthcare
+FROM fortune_companies
+WHERE healthcare_benefits = 1
+GROUP BY industry
+HAVING COUNT(company_id) > 5;
+
+
+--Companies offering healthcare benefits and at least 4 weeks of maternity leave
+SELECT company_name,healthcare_benefits,maternity_leave_weeks
+FROM fortune_companies
+WHERE healthcare_benefits = 1 
+AND maternity_leave_weeks >= 4;
+  
